@@ -14,8 +14,8 @@
 
 
 //Verify we have float32 and float64
-static char static_assert_float32[1 - (2 * ((sizeof(float) * CHAR_BIT) != 32))]; //To ensure float is 32 bits
-static char static_assert_float64[1 - (2 * ((sizeof(double) * CHAR_BIT) != 64))]; //To ensure double is 64 bits
+// static char static_assert_float32[1 - (2 * ((sizeof(float) * CHAR_BIT) != 32))]; //To ensure float is 32 bits
+// static char static_assert_float64[1 - (2 * ((sizeof(double) * CHAR_BIT) != 64))]; //To ensure double is 64 bits
 
 
 

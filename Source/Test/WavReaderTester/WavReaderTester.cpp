@@ -12,25 +12,25 @@
 
 
 WavReaderTester::WavReaderTester() {
-    inDirPath = nullptr;
-    sampleData = nullptr;
-    int16Samples = nullptr;
-    wavReader = new WavReader();
+    _pInDirPath = nullptr;
+    _pSampleData = nullptr;
+    _pInt16Samples = nullptr;
+    _pWavReader = new WavReader();
 }
 
 
 WavReaderTester::~WavReaderTester() {
-    if (wavReader) {
-        delete wavReader;
-        wavReader = nullptr;
+    if (_pWavReader) {
+        delete _pWavReader;
+        _pWavReader = nullptr;
     }
-    if (sampleData) {
-        free(sampleData);
-        sampleData = nullptr;
+    if (_pSampleData) {
+        free(_pSampleData);
+        _pSampleData = nullptr;
     }
-    if (int16Samples) {
-        free(int16Samples);
-        int16Samples = nullptr;
+    if (_pInt16Samples) {
+        free(_pInt16Samples);
+        _pInt16Samples = nullptr;
     }
 }
 
@@ -40,12 +40,12 @@ bool WavReaderTester::initialize(const char *inDirPath) {
     //printf("Initializing WavReaderTester.\n\n");
 
     //Error-check inDirPath
-    if (!inDirPath) {
+    if (!_pInDirPath) {
         fprintf(stderr, "Error: Input directory path is NULL.\n");
         return false;
     }
     char tempFilePath[MAX_PATH_LENGTH];
-    sprintf(tempFilePath, "%s/WavReaderTesterTempFile.txt", inDirPath);
+    sprintf(tempFilePath, "%s/WavReaderTesterTempFile.txt", _pInDirPath);
     FILE *fp = fopen(tempFilePath, "w");
     if (!fp) {
         fprintf(stderr, "Error: Unable to open temp file at path:\n%s.\n", tempFilePath);
@@ -58,16 +58,16 @@ bool WavReaderTester::initialize(const char *inDirPath) {
     }
     fclose(fp);
 
-    this->inDirPath = inDirPath;
+    this->_pInDirPath = inDirPath;
 
-    if (sampleData) {
-        free(sampleData);
-        sampleData = nullptr;
+    if (_pSampleData) {
+        free(_pSampleData);
+        _pSampleData = nullptr;
     }
 
-    if (int16Samples) {
-        free(int16Samples);
-        int16Samples = nullptr;
+    if (_pInt16Samples) {
+        free(_pInt16Samples);
+        _pInt16Samples = nullptr;
     }
 
     return true;
@@ -80,19 +80,19 @@ bool WavReaderTester::runWavReaderTest() {
 
     //Reading files all at once
     printf("    Testing reading files, all-at-once...\n");
-    for (int i = 0; i < NUM_FILE_PARAM_SETS; i++) {
+    for (uint32_t i = 0; i < NUM_FILE_PARAM_SETS; i++) {
         testReadFileAllAtOnce(&inFileParamSets[i]);
     }
 
     //Read files incrementally
     printf("    Testing reading files, incrementally...\n");
-    for (int i = 0; i < NUM_FILE_PARAM_SETS; i++) {
+    for (uint32_t i = 0; i < NUM_FILE_PARAM_SETS; i++) {
         testReadFileIncrementally(&inFileParamSets[i]);
     }
 
     //Read files from int16 sample arrays
     printf("    Testing reading files from int16s...\n");
-    for (int i = 0; i < NUM_FILE_PARAM_SETS; i++) {
+    for (uint32_t i = 0; i < NUM_FILE_PARAM_SETS; i++) {
         if (!testReadFileToInt16s(&inFileParamSets[i])) {
             fprintf(stderr, "runWavReaderTest(): Error test-reading file to int16s.\n");
             return false;
@@ -112,34 +112,34 @@ bool WavReaderTester::testReadFileAllAtOnce(const InFileParamSetDef *ifps) {
     char inFilePath[MAX_PATH_LENGTH];
     sprintf(inFilePath,
             "%s/%s",
-            inDirPath,
+            _pInDirPath,
             fileName);
 
-    if (!wavReader->initialize(inFilePath)) {
+    if (!_pWavReader->initialize(inFilePath)) {
         fprintf(stderr, "readFileAllAtOnce(): Problem initializing WavReader.\n");
         return false;
     }
 
-    if (!wavReader->prepareToRead()) {
+    if (!_pWavReader->prepareToRead()) {
         fprintf(stderr, "readFileAllAtOnce(): Problem preparing to read.\n");
         return false;
     }
 
-    //Allocate sampleData
+    //Allocate _pSampleData
 
-    uint32_t sampleDataSize = wavReader->getSampleDataSize();
-    if (sampleData) {
-        free(sampleData);
-        sampleData = nullptr;
+    uint32_t sampleDataSize = _pWavReader->getSampleDataSize();
+    if (_pSampleData) {
+        free(_pSampleData);
+        _pSampleData = nullptr;
     }
-    sampleData = (uint8_t *) malloc(sampleDataSize);
+    _pSampleData = (uint8_t *) malloc(sampleDataSize);
 
-    if (!wavReader->readData(sampleData, sampleDataSize)) {
+    if (!_pWavReader->readData(_pSampleData, sampleDataSize)) {
         fprintf(stderr, "readFileAllAtOnce(): Problem reading data.\n");
         return false;
     }
 
-    if (!wavReader->finishReading()) {
+    if (!_pWavReader->finishReading()) {
         fprintf(stderr, "readFileAllAtOnce(): Problem finishing reading.\n");
         return false;
     }
@@ -163,27 +163,27 @@ bool WavReaderTester::testReadFileIncrementally(const InFileParamSetDef *ifps) {
     char inFilePath[MAX_PATH_LENGTH];
     sprintf(inFilePath,
             "%s/%s",
-            inDirPath,
+            _pInDirPath,
             fileName);
 
-    if (!wavReader->initialize(inFilePath)) {
+    if (!_pWavReader->initialize(inFilePath)) {
         fprintf(stderr, "readFileIncrementally(): Problem initializing WavReader.\n");
         return false;
     }
 
-    if (!wavReader->prepareToRead()) {
+    if (!_pWavReader->prepareToRead()) {
         fprintf(stderr, "readFileIncrementally(): Problem preparing to read.\n");
         return false;
     }
 
-    //Allocate sampleData
+    //Allocate _pSampleData
     const uint32_t sampleDataSize =
-            wavReader->getNumSamples() * wavReader->getNumChannels() * wavReader->getByteDepth();
-    if (sampleData) {
-        free(sampleData);
-        sampleData = nullptr;
+            _pWavReader->getNumSamples() * _pWavReader->getNumChannels() * _pWavReader->getByteDepth();
+    if (_pSampleData) {
+        free(_pSampleData);
+        _pSampleData = nullptr;
     }
-    sampleData = (uint8_t *) malloc(sampleDataSize);
+    _pSampleData = (uint8_t *) malloc(sampleDataSize);
 
     const uint32_t bufferSize = numChannels * byteDepth * 1; //Pick a size that falls on even sample block boundary
     uint8_t buffer[bufferSize];
@@ -194,19 +194,19 @@ bool WavReaderTester::testReadFileIncrementally(const InFileParamSetDef *ifps) {
         //Read buffer from file
         const uint32_t numBytesToRead = (sampleDataSize - i < bufferSize) ? sampleDataSize - i : bufferSize;
         //printf("%d\n", numBytesToRead);
-        if (!wavReader->readData(buffer, numBytesToRead)) {
+        if (!_pWavReader->readData(buffer, numBytesToRead)) {
             fprintf(stderr, "readFileIncrementally(): Problem reading data.\n");
             return false;
         }
 
         //Store buffer in sample data
-        for (int j = 0; j < numBytesToRead; j++) {
-            sampleData[i] = buffer[j];
+        for (uint32_t j = 0; j < numBytesToRead; j++) {
+            _pSampleData[i] = buffer[j];
             i++;
         }
     }
 
-    if (!wavReader->finishReading()) {
+    if (!_pWavReader->finishReading()) {
         fprintf(stderr, "readFileIncrementally(): Problem finishing reading.\n");
         return false;
     }
@@ -229,34 +229,34 @@ bool WavReaderTester::testReadFileToInt16s(const InFileParamSetDef *ifps) {
     char inFilePath[MAX_PATH_LENGTH];
     sprintf(inFilePath,
             "%s/%s",
-            inDirPath,
+            _pInDirPath,
             fileName);
 
-    if (!wavReader->initialize(inFilePath)) {
-        fprintf(stderr, "readDataToInt16s(): Unable to initialize wavReader.\n");
+    if (!_pWavReader->initialize(inFilePath)) {
+        fprintf(stderr, "readDataToInt16s(): Unable to initialize _pWavReader.\n");
         return false;
     }
 
-    if (!wavReader->prepareToRead()) {
+    if (!_pWavReader->prepareToRead()) {
         fprintf(stderr, "readDataToInt16s(): Problem starting writing.\n");
         return false;
     }
 
     //Allocate int16 samples
-    const size_t numInt16SampleBytes = wavReader->getNumSamples() * wavReader->getNumChannels() * 2; //2 bytes in int16
-    if (int16Samples) {
-        free(int16Samples);
-        int16Samples = nullptr;
+    const size_t numInt16SampleBytes = _pWavReader->getNumSamples() * _pWavReader->getNumChannels() * 2; //2 bytes in int16
+    if (_pInt16Samples) {
+        free(_pInt16Samples);
+        _pInt16Samples = nullptr;
     }
-    int16Samples = (int16_t *) malloc(numInt16SampleBytes);
+    _pInt16Samples = (int16_t *) malloc(numInt16SampleBytes);
 
 
-    if (!wavReader->readDataToInt16s(int16Samples, wavReader->getNumSamples())) {
+    if (!_pWavReader->readDataToInt16s(_pInt16Samples, _pWavReader->getNumSamples())) {
         fprintf(stderr, "readDataToInt16s(): Problem reading data.\n");
         return false;
     }
 
-    if (!wavReader->finishReading()) {
+    if (!_pWavReader->finishReading()) {
         fprintf(stderr, "readFileFromInt16s(): Problem finishing reading.\n");
         return false;
     }
@@ -277,17 +277,17 @@ bool WavReaderTester::validates(const InFileParamSetDef *ifps, ValidationSource 
 
     //Validate metadata
 
-    if (ifps->numChannels != wavReader->getNumChannels()) {
+    if (ifps->numChannels != _pWavReader->getNumChannels()) {
         fprintf(stderr, "Error: Expected and actual numChannels for %s don't match.\n", fileName);
         return false;
     }
 
-    if (ifps->byteDepth != wavReader->getByteDepth()) {
+    if (ifps->byteDepth != _pWavReader->getByteDepth()) {
         fprintf(stderr, "Error: Expected and actual byteDepth for %s don't match.\n", fileName);
         return false;
     }
 
-    if (ifps->samplesAreInts != wavReader->getSamplesAreInts()) {
+    if (ifps->samplesAreInts != _pWavReader->getSamplesAreInts()) {
         fprintf(stderr, "Error: Expected and actual samplesAreInts for %s don't match.\n", fileName);
         return false;
     }
@@ -303,23 +303,23 @@ bool WavReaderTester::validates(const InFileParamSetDef *ifps, ValidationSource 
     int16_t prevSampleCh2 = 0;
     uint32_t positiveZeroCrossCountCh1 = 0;
     uint32_t positiveZeroCrossCountCh2 = 0;
-    uint32_t numSamples = wavReader->getNumSamples();
-    uint32_t numChannels = wavReader->getNumChannels();
-    uint32_t sampleDataSize = wavReader->getNumSamples() * wavReader->getNumChannels() * wavReader->getByteDepth();
+    uint32_t numSamples = _pWavReader->getNumSamples();
+    uint32_t numChannels = _pWavReader->getNumChannels();
+    uint32_t sampleDataSize = _pWavReader->getNumSamples() * _pWavReader->getNumChannels() * _pWavReader->getByteDepth();
     for (uint32_t i = 0; i < numSamples; i++) {
 
         prevSampleCh1 = sampleCh1;
         prevSampleCh2 = sampleCh2;
 
         if (validationSource == VALIDATION_SOURCE_SAMPLEDATA) {
-            wavReader->readInt16SampleFromArray(sampleData, //wav-format sample data
+            _pWavReader->readInt16SampleFromArray(_pSampleData, //wav-format sample data
                                                 sampleDataSize,
                                                 i,
                                                 sampleCh1,
                                                 sampleCh2);
         } else { // validationSource == VALIDATION_SOURCE_INT16SAMPLES
-            sampleCh1 = int16Samples[i * numChannels];
-            sampleCh2 = (numChannels == 1) ? 0 : int16Samples[i * numChannels + 1];
+            sampleCh1 = _pInt16Samples[i * numChannels];
+            sampleCh2 = (numChannels == 1) ? 0 : _pInt16Samples[i * numChannels + 1];
         }
 
         if (prevSampleCh1 < 0 && sampleCh1 >= 0) {

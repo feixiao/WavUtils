@@ -156,11 +156,11 @@ private:
     const uint32_t NUM_FILE_PARAM_SETS = sizeof(inFileParamSets) / sizeof(InFileParamSetDef);
 
     //Array to hold sample data, in wav-file format
-    uint8_t *sampleData;
-    int16_t *int16Samples;
+    uint8_t* _pSampleData;
+    int16_t* _pInt16Samples;
 
-    WavReader *wavReader;
-    const char *inDirPath;
+    WavReader* _pWavReader;
+    const char * _pInDirPath;
 };
 
 

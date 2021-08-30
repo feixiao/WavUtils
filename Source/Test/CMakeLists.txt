@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.2.0)
 
-
-project(wav_library)
+project(wav_test_library)
 
 #set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_BUILD_TYPE Release CACHE STRING "set build type to release")
@@ -48,17 +47,20 @@ endif ()
 
 
 include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}/WavReader
-        ${CMAKE_CURRENT_SOURCE_DIR}/WavWriter
+        ${CMAKE_CURRENT_SOURCE_DIR}/WavReaderTester
+        ${CMAKE_CURRENT_SOURCE_DIR}/WavWriterTester
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../Classes
+        ${CMAKE_CURRENT_SOURCE_DIR}/../Classes/WavWriter
+        ${CMAKE_CURRENT_SOURCE_DIR}/../Classes/WavReader
 )
 
 
 set(src ${CMAKE_CURRENT_SOURCE_DIR})
 set(sources
         ${src}
-        ${src}/WavReader
-        ${src}/WavWriter
+        ${src}/WavReaderTester
+        ${src}/WavWriterTester
         )
 
 foreach (iter ${sources})
@@ -164,6 +166,7 @@ else ()
     set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../../out/lib)
 endif ()
 
+set(LIBRARY_OUTPUT_PATH ${lib_output_path})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${lib_output_path})
 
-
-add_library(wav STATIC ${lib_src})
+add_library(wav_tester STATIC ${lib_src})

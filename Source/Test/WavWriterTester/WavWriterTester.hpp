@@ -172,10 +172,10 @@ private:
     double float64Samples2Ch[NUM_SAMPLES * 2];
 
     //Array to hold sample data, in wav-file format
-    uint8_t sampleData[NUM_SAMPLES * MAX_NUM_CHANNELS * MAX_BYTE_DEPTH]; //Large enough for all permutations
+    uint8_t _sampleData[NUM_SAMPLES * MAX_NUM_CHANNELS * MAX_BYTE_DEPTH]; //Large enough for all permutations
 
-    WavWriter *wavWriter;
-    const char *outDirPath;
+    WavWriter *_pWavWriter;
+    const char * _pOutDirPath;
 };
 
 

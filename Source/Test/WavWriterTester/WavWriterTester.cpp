@@ -12,15 +12,15 @@
 
 
 WavWriterTester::WavWriterTester() {
-    outDirPath = nullptr;
-    wavWriter = new WavWriter();
+    _pOutDirPath = nullptr;
+    _pWavWriter = new WavWriter();
 }
 
 
 WavWriterTester::~WavWriterTester() {
-    if (wavWriter) {
-        delete wavWriter;
-        wavWriter = nullptr;
+    if (_pWavWriter) {
+        delete _pWavWriter;
+        _pWavWriter = nullptr;
     }
 }
 
@@ -48,12 +48,12 @@ bool WavWriterTester::initialize(const char *outDirPath) {
     }
     fclose(fp);
 
-    this->outDirPath = outDirPath;
+    this->_pOutDirPath = outDirPath;
 
     //Initialize sample arrays
 
     //int8 1 & 2 channel
-    for (int i = 0; i < NUM_SAMPLES; i++) {
+    for (uint32_t i = 0; i < NUM_SAMPLES; i++) {
         uint8_t sample = (uint8_t) ((127.0 * sin((2 * M_PI * i) / 100.0)) + 127.0);
         uint8Samples1Ch[i] = sample;
         uint8Samples2Ch[i * 2] = sample;
@@ -61,7 +61,7 @@ bool WavWriterTester::initialize(const char *outDirPath) {
     }
 
     //int16 1 & 2 channel
-    for (int i = 0; i < NUM_SAMPLES; i++) {
+    for (uint32_t i = 0; i < NUM_SAMPLES; i++) {
         int16_t sample = (int16_t) (32767.0 * sin((2 * M_PI * i) / 100.0));
         int16Samples1Ch[i] = sample;
         int16Samples2Ch[i * 2] = sample;
@@ -69,7 +69,7 @@ bool WavWriterTester::initialize(const char *outDirPath) {
     }
 
     //int24 1 & 2 channel
-    for (int i = 0; i < NUM_SAMPLES; i++) {
+    for (uint32_t i = 0; i < NUM_SAMPLES; i++) {
         int32_t sample = (int32_t) (8388607.0 * sin((2 * M_PI * i) / 100.0));
         int24Samples1Ch[i] = sample;
         int24Samples2Ch[i * 2] = sample;
@@ -77,7 +77,7 @@ bool WavWriterTester::initialize(const char *outDirPath) {
     }
 
     //int32 1 & 2 channel
-    for (int i = 0; i < NUM_SAMPLES; i++) {
+    for (uint32_t i = 0; i < NUM_SAMPLES; i++) {
         int32_t sample = (int32_t) (2147483647.0 * sin((2 * M_PI * i) / 100.0));
         int32Samples1Ch[i] = sample;
         int32Samples2Ch[i * 2] = sample;
@@ -85,7 +85,7 @@ bool WavWriterTester::initialize(const char *outDirPath) {
     }
 
     //float32 1 & 2 channel
-    for (int i = 0; i < NUM_SAMPLES; i++) {
+    for (uint32_t i = 0; i < NUM_SAMPLES; i++) {
         float sample = (float) sin((2 * M_PI * i) / 100.0);
         float32Samples1Ch[i] = sample;
         float32Samples2Ch[i * 2] = sample;
@@ -93,7 +93,7 @@ bool WavWriterTester::initialize(const char *outDirPath) {
     }
 
     //float64 1 & 2 channel
-    for (int i = 0; i < NUM_SAMPLES; i++) {
+    for (uint32_t i = 0; i < NUM_SAMPLES; i++) {
         double sample = (double) sin((2 * M_PI * i) / 100.0);
         float64Samples1Ch[i] = sample;
         float64Samples2Ch[i * 2] = sample;
@@ -110,7 +110,7 @@ bool WavWriterTester::runWavWriterTest() {
 
     //Write files all at once
     printf("    Writing files, all-at-once...\n");
-    for (int i = 0; i < NUM_FILE_PARAM_SETS; i++) {
+    for (uint32_t i = 0; i < NUM_FILE_PARAM_SETS; i++) {
         if (!writeFileAllAtOnce(&outFileParamSets[i])) {
             fprintf(stderr, "runWavWriterTest(): Problem writing file all-at-once.\n");
             return false;
@@ -119,7 +119,7 @@ bool WavWriterTester::runWavWriterTest() {
 
     //Write files incrementally
     printf("    Writing files, incrementally...\n");
-    for (int i = 0; i < NUM_FILE_PARAM_SETS; i++) {
+    for (uint32_t i = 0; i < NUM_FILE_PARAM_SETS; i++) {
         if (!writeFileIncrementally(&outFileParamSets[i])) {
             fprintf(stderr, "runWavWriterTest(): Problem writing file incrementally.\n");
             return false;
@@ -137,7 +137,7 @@ bool WavWriterTester::runWavWriterTest() {
 
     printf("Done WavWriterTest.\n");
 
-    printf("    To verify written files, check contents of output directory:\n    %s/\n\n", outDirPath);
+    printf("    To verify written files, check contents of output directory:\n    %s/\n\n", _pOutDirPath);
 
     return true;
 }
@@ -152,17 +152,17 @@ bool WavWriterTester::writeFileAllAtOnce(const OutFileParamSetDef *ofps) {
     char outFilePath[MAX_PATH_LENGTH];
     sprintf(outFilePath,
             "%s/fullwrite-%d%s%dch.wav",
-            outDirPath,
+            _pOutDirPath,
             byteDepth * 8,
             (samplesAreInts) ? "i" : "f",
             numChannels);
 
     if (!setSampleData(numChannels, byteDepth, samplesAreInts)) {
-        fprintf(stderr, "writeFileAllAtOnce(): Problem setting sampleData.\n");
+        fprintf(stderr, "writeFileAllAtOnce(): Problem setting _pSampleData.\n");
         return false;
     }
 
-    if (!wavWriter->initialize(outFilePath,
+    if (!_pWavWriter->initialize(outFilePath,
                                SAMPLE_RATE,
                                numChannels,
                                samplesAreInts,
@@ -171,17 +171,17 @@ bool WavWriterTester::writeFileAllAtOnce(const OutFileParamSetDef *ofps) {
         return false;
     }
 
-    if (!wavWriter->startWriting()) {
+    if (!_pWavWriter->startWriting()) {
         fprintf(stderr, "writeFileAllAtOnce(): Problem starting writing.\n");
         return false;
     }
 
-    if (!wavWriter->writeData(sampleData, NUM_SAMPLES * numChannels * byteDepth)) {
+    if (!_pWavWriter->writeData(_sampleData, NUM_SAMPLES * numChannels * byteDepth)) {
         fprintf(stderr, "writeFileAllAtOnce(): Problem writing data.\n");
         return false;
     }
 
-    if (!wavWriter->finishWriting()) {
+    if (!_pWavWriter->finishWriting()) {
         fprintf(stderr, "writeFileAllAtOnce(): Problem finishing writing.\n");
         return false;
     }
@@ -199,7 +199,7 @@ bool WavWriterTester::writeFileIncrementally(const OutFileParamSetDef *ofps) {
     char outFilePath[MAX_PATH_LENGTH];
     sprintf(outFilePath,
             "%s/incrwrite-%d%s%dch.wav",
-            outDirPath,
+            _pOutDirPath,
             byteDepth * 8,
             (samplesAreInts) ? "i" : "f",
             numChannels);
@@ -209,11 +209,11 @@ bool WavWriterTester::writeFileIncrementally(const OutFileParamSetDef *ofps) {
     uint8_t buffer[BUFFER_SIZE];
 
     if (!setSampleData(numChannels, byteDepth, samplesAreInts)) {
-        fprintf(stderr, "writeFileIncrementally(): Problem setting sampleData.\n");
+        fprintf(stderr, "writeFileIncrementally(): Problem setting _pSampleData.\n");
         return false;
     }
 
-    if (!wavWriter->initialize(outFilePath,
+    if (!_pWavWriter->initialize(outFilePath,
                                SAMPLE_RATE,
                                numChannels,
                                samplesAreInts,
@@ -222,7 +222,7 @@ bool WavWriterTester::writeFileIncrementally(const OutFileParamSetDef *ofps) {
         return false;
     }
 
-    if (!wavWriter->startWriting()) {
+    if (!_pWavWriter->startWriting()) {
         fprintf(stderr, "writeFileIncrementally(): Problem starting writing.\n");
         return false;
     }
@@ -233,19 +233,19 @@ bool WavWriterTester::writeFileIncrementally(const OutFileParamSetDef *ofps) {
         //Fill a buffer
         uint32_t j = 0;
         while (j < BUFFER_SIZE && i < SAMPLE_DATA_SIZE) {
-            buffer[j] = sampleData[i];
+            buffer[j] = _sampleData[i];
             j++;
             i++;
         }
 
         //Write buffer to file
-        if (!wavWriter->writeData(buffer, j)) {
+        if (!_pWavWriter->writeData(buffer, j)) {
             fprintf(stderr, "writeFileIncrementally(): Problem writing data.\n");
             return false;
         }
     }
 
-    if (!wavWriter->finishWriting()) {
+    if (!_pWavWriter->finishWriting()) {
         fprintf(stderr, "writeFileIncrementally(): Problem finishing writing.\n");
         return false;
     }
@@ -259,14 +259,14 @@ bool WavWriterTester::writeFileFromInt16s(uint32_t numChannels) {
     char outFilePath[MAX_PATH_LENGTH];
     sprintf(outFilePath,
             "%s/int16write-%dch.wav",
-            outDirPath,
+            _pOutDirPath,
             numChannels);
 
     uint32_t byteDepth = 2;
     bool samplesAreInts = true;
-    int16_t *int16Samples = (numChannels == 1) ? int16Samples1Ch : int16Samples2Ch;
+    int16_t *_pInt16Samples = (numChannels == 1) ? int16Samples1Ch : int16Samples2Ch;
 
-    if (!wavWriter->initialize(outFilePath,
+    if (!_pWavWriter->initialize(outFilePath,
                                SAMPLE_RATE,
                                numChannels,
                                samplesAreInts,
@@ -275,17 +275,17 @@ bool WavWriterTester::writeFileFromInt16s(uint32_t numChannels) {
         return false;
     }
 
-    if (!wavWriter->startWriting()) {
+    if (!_pWavWriter->startWriting()) {
         fprintf(stderr, "writeFileFromInt16s(): Problem starting writing.\n");
         return false;
     }
 
-    if (!wavWriter->writeDataFromInt16s(int16Samples, NUM_SAMPLES)) {
+    if (!_pWavWriter->writeDataFromInt16s(_pInt16Samples, NUM_SAMPLES)) {
         fprintf(stderr, "writeFileFromInt16s(): Problem writing data.\n");
         return false;
     }
 
-    if (!wavWriter->finishWriting()) {
+    if (!_pWavWriter->finishWriting()) {
         fprintf(stderr, "writeFileFromInt16s(): Problem finishing writing.\n");
         return false;
     }
@@ -331,16 +331,16 @@ bool WavWriterTester::setSampleData(uint32_t numChannels, uint32_t byteDepth, bo
 
     uint32_t destBlockSize = numChannels * byteDepth;
     uint32_t containerSize = (byteDepth == 3 && samplesAreInts) ? byteDepth + 1 : byteDepth;
-    for (int i = 0; i < NUM_SAMPLES; i++) {
+    for (uint32_t i = 0; i < NUM_SAMPLES; i++) {
         uint8_t *bytes = &srcSampleBytes[i * numChannels * containerSize];
         uint32_t blockIndex = i * destBlockSize;
         int k = 0;
-        for (int j = 0; j < destBlockSize; j++) {
+        for (uint32_t j = 0; j < destBlockSize; j++) {
             if (byteDepth == 3 && samplesAreInts &&
                 k == 3) { //Handle edge case of 2ch int24, in int32 containers; skip padding byte
                 k++;
             }
-            sampleData[blockIndex + j] = bytes[k];
+            _sampleData[blockIndex + j] = bytes[k];
             k++;
         }
     }

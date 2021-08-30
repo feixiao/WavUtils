@@ -3,4 +3,23 @@ project(WAV_DEMO)
 
 
 add_subdirectory(Classes)
+add_subdirectory(Test)
 
+include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}/Classes
+        ${CMAKE_CURRENT_SOURCE_DIR}/Classes/WavReader
+        ${CMAKE_CURRENT_SOURCE_DIR}/Classes/WavWriter
+        ${CMAKE_CURRENT_SOURCE_DIR}/Test/WavReaderTester
+        ${CMAKE_CURRENT_SOURCE_DIR}/Test/WavWriterTester
+)
+
+set(EXAMPLE_APP_NAME "wav-examples")
+
+set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
+
+
+add_executable(${EXAMPLE_APP_NAME} ${SRC})
+
+target_link_libraries(${EXAMPLE_APP_NAME} wav)
+target_link_libraries(${EXAMPLE_APP_NAME} wav_tester)

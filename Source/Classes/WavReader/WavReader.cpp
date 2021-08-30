@@ -34,9 +34,9 @@ WavReader::~WavReader() {
 bool WavReader::initialize(const char *readFilePath) {
 
     //Test for file existence...
-    FILE *f = fopen(_pReadFilePath, "r");
+    FILE *f = fopen(readFilePath, "r");
     if (!f) {
-        fprintf(stderr, "File: %s doesn't exist.\n", _pReadFilePath);
+        fprintf(stderr, "File: %s doesn't exist.\n", readFilePath);
         return false;
     }
     fclose(f);
@@ -174,10 +174,10 @@ bool WavReader::findSubchunk(const char *subchunkId, uint32_t *subchunkSize) {
 
 bool WavReader::readMetadata() {
 
-    if (!_initialized) {
-        fprintf(stderr, "%s", UNINITIALIZED_MSG);
-        return false;
-    }
+//    if (!_initialized) {
+//        fprintf(stderr, "%s", UNINITIALIZED_MSG);
+//        return false;
+//    }
 
     if (!openFile()) {
         fprintf(stderr, "Error: Unable to open file to read metadata.\n");

@@ -11,6 +11,7 @@ int main() {
     wr->prepareToRead();  // Metadata available after this
     wr->readData(nullptr, wr->getSampleDataSize());
     wr->finishReading();
+    printf("Hello World");
     return 0;
 }
 

@@ -41,4 +41,5 @@ if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
     set(CMAKE_MACOSX_RPATH build)
 endif ()
 
+add_subdirectory(android_demo)
 add_subdirectory(Source)

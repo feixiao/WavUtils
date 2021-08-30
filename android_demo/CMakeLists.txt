@@ -22,4 +22,5 @@ endif ()
 
 set(EXECUTABLE_OUTPUT_PATH ${exe_output_path})
 link_libraries(${lib_output_path}/libwav.a)
+
 add_executable(${EXAMPLE_APP_NAME} ${SRC})

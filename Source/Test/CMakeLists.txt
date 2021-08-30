@@ -96,7 +96,7 @@ elseif (${WIN_OS})
 endif ()
 
 if (CMAKE_SYSTEM_NAME MATCHES "Android")
-    set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../../../out/android/lib/${ANDROID_ABI})
+    set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../../out/android/lib/${ANDROID_ABI})
 else ()
     set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../../out/lib)
 endif ()

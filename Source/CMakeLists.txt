@@ -18,13 +18,14 @@ set(EXAMPLE_APP_NAME "wav-examples")
 set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Android")
-    set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../../../out/android/bin/${ANDROID_ABI})
+    set(exe_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../out/android/bin/${ANDROID_ABI})
 else ()
-    set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../../out/bin)
+    set(exe_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../out/bin)
 endif ()
 
-set(EXECUTABLE_OUTPUT_PATH ${lib_output_path})
+set(EXECUTABLE_OUTPUT_PATH ${exe_output_path})
 
+link_libraries(wav wav_tester)
 add_executable(${EXAMPLE_APP_NAME} ${SRC})
 
 target_link_libraries(${EXAMPLE_APP_NAME} wav)

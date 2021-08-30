@@ -18,6 +18,8 @@ set(EXAMPLE_APP_NAME "wav-examples")
 set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
 
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../out/bin)
+
 
 add_executable(${EXAMPLE_APP_NAME} ${SRC})
 

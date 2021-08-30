@@ -167,6 +167,7 @@ else ()
 endif ()
 
 set(LIBRARY_OUTPUT_PATH ${lib_output_path})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${lib_output_path})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${lib_output_path})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${lib_output_path})
 
 add_library(wav_tester STATIC ${lib_src})

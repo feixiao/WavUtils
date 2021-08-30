@@ -19,7 +19,6 @@ if (CMAKE_SYSTEM_NAME MATCHES "Android")
     endif ()
 
     add_definitions("-DANDROID")
-    add_definitions("-DACL_CPP_LOG_SKIP_FILE")
     add_definitions("-Wno-unused-command-line-argument")
     #	add_definitions("-Wno-invalid-source-encoding")
     add_definitions("-fdata-sections -ffunction-sections")
@@ -83,7 +82,6 @@ if (${UNIX_OS})
             "-Wno-long-long"
             "-Wuninitialized"
             "-D_POSIX_PTHREAD_SEMANTICS"
-            "-DACL_PREPARE_COMPILE"
             "-Wno-unused-parameter"
             "-fexceptions"
     )
@@ -93,70 +91,7 @@ if (${UNIX_OS})
         add_definitions("-g")
     endif ()
 
-    if (DISABLE_DB MATCHES "YES")
-        add_definitions("-DACL_DB_DISABLE")
-        message(STATUS "DB (mysql, pgsql, sqlite) was disabled!")
-    else ()
-        if (HAS_MYSQL MATCHES "YES")
-            add_definitions("-DHAS_MYSQL")
-            message(STATUS "HAS_MYSQL been set, mysql enable!")
-        elseif (HAS_MYSQL_DLL MATCHES "YES")
-            add_definitions("-DHAS_MYSQL_DLL")
-            message(STATUS "HAS_MYSQL_DLL been set, mysql enable!")
-        else ()
-            message(STATUS "mysql disable!")
-        endif ()
-
-        if (HAS_PGSQL MATCHES "YES")
-            add_definitions("-DHAS_PGSQL")
-            message(STATUS "HAS_PGSQL been set, pgsql enable!")
-        elseif (HAS_PGSQL_DLL MATCHES "YES")
-            add_definitions("-DHAS_PGSQL_DLL")
-            message(STATUS "HAS_PGSQL_DLL been set, pgsql enable!")
-        else ()
-            message(STATUS "pgsql disable!")
-        endif ()
-
-        if (HAS_SQLITE MATCHES "YES")
-            add_definitions("-DHAS_SQLITE")
-            message(STATUS "HAS_SQLITE been set, sqlite enable!")
-        elseif (HAS_SQLITE_DLL MATCHES "YES")
-            add_definitions("-DHAS_SQLITE_DLL")
-            message(STATUS "HAS_SQLITE_DLL been set, sqlite enable!")
-        else ()
-            message(STATUS "sqlite disable!")
-        endif ()
-    endif ()
-
-    if (HAS_POLARSSL MATCHES "YES")
-        add_definitions("-DHAS_POLARSSL")
-        message(STATUS "HAS_POLARSSL been set, polarssl enable!")
-    elseif (HAS_MBEDTSL MATCHES "YES")
-        add_definitions("-DHAS_MBEDTLS")
-        message(STATUS "HAS_MBEDTLS been set, mbedtls enable!")
-    elseif (HAS_POLARSSL_DLL MATCHES "YES")
-        add_definitions("-DHAS_POLARSSL_DLL")
-        message(STATUS "HAS_POLARSSL_DLL been set, polarssl enable!")
-    elseif (HAS_MBEDTLS_DLL MATCHES "YES")
-        add_definitions("-DHAS_MBEDTLS_DLL")
-        message(STATUS "HAS_MBEDTLS_DLL been set, mbedtls enable!")
-    else ()
-        message(STATUS "polarssl disable!")
-    endif ()
-
-
 elseif (${WIN_OS})
-    add_definitions(
-            "-Ycacl_stdafx.hpp"
-            "-DACL_WRITEABLE_CHECK"
-            "-DACL_PREPARE_COMPILE"
-            "-DHAS_ZLIB_DLL"
-            "-DHAS_MYSQL_DLL"
-            "-DHAS_SQLITE_DLL"
-            "-DHAS_PGSQL_DLL"
-            "-DHAS_POLARSSL_DLL"
-            "-DHAS_MBEDTLS_DLL"
-            "-DUSE_WIN_ICONV")
     aux_source_directory(${src}/stdlib/internal lib_src)
 endif ()
 
@@ -166,7 +101,7 @@ else ()
     set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../../out/lib)
 endif ()
 
-set(LIBRARY_OUTPUT_PATH ${lib_output_path})
+#set(LIBRARY_OUTPUT_PATH ${lib_output_path})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${lib_output_path})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${lib_output_path})
 

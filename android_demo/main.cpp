@@ -2,6 +2,7 @@
 // Created by frank on 2021/8/30.
 //
 
+#include <iostream>
 #include "WavReader.hpp"
 
 int main() {

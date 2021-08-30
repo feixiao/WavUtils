@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.0)
+cmake_minimum_required(VERSION 3.2.0)
 project(WAV_DEMO)
 
 
@@ -17,8 +17,13 @@ set(EXAMPLE_APP_NAME "wav-examples")
 
 set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
+if (CMAKE_SYSTEM_NAME MATCHES "Android")
+    set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../../../out/android/bin/${ANDROID_ABI})
+else ()
+    set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/../../out/bin)
+endif ()
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../out/bin)
+set(EXECUTABLE_OUTPUT_PATH ${lib_output_path})
 
 add_executable(${EXAMPLE_APP_NAME} ${SRC})
 
